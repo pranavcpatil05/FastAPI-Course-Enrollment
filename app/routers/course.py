@@ -29,6 +29,11 @@ def getall_course(db: Session=Depends(get_DB)):
     all_courses= db.query(CourseModel).all()
     return all_courses
 
+@router.get('/available', response_model=List[CourseResponse], status_code=status.HTTP_200_OK)
+def get_available_courses(db: Session=Depends(get_DB)):
+    available_courses = db.query(CourseModel).filter(CourseModel.seats_available>0).all()
+    return available_courses
+
 @router.get('/{course_id}', response_model=CourseResponse, status_code=status.HTTP_200_OK)
 def get_course(course_id: int, db: Session=Depends(get_DB)):
     data = db.query(CourseModel).filter(CourseModel.id == course_id).first()
