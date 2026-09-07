@@ -17,14 +17,14 @@ def getall_student(db: Session=Depends(get_DB)):
 def get_student(student_id: int, db: Session=Depends(get_DB)):
     student_data = db.query(StudentModel).filter(student_id==StudentModel.id).first()
     if not student_data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Student with {student_id} Not Found in Student Database..')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Student with ID {student_id} was not found in the database.')
     return student_data
 
 @router.post('/', response_model=StudentResponse, status_code=status.HTTP_201_CREATED)
 def create_student(student: StudentCreate, db: Session=Depends(get_DB)):
     existing_student = db.query(StudentModel).filter(student.email == StudentModel.email).first()
     if existing_student:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'Student with {existing_student.id} already Exists in Database..')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'A student with email address "{student.email}" already exists in the database.')
     
     new_student = StudentModel(
         name= student.name,
@@ -41,7 +41,7 @@ def update_student(student_id: int, student_data: StudentUpdate, db: Session=Dep
     existing_student = db.query(StudentModel).filter(student_id == StudentModel.id).first()
 
     if not existing_student:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Student with {student_id} not found in Student DataBase..')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Student with ID {student_id} was not found in the database.')
     update_student_data = student_data.model_dump(exclude_unset=True)
 
     for key, value in update_student_data.items():
@@ -56,7 +56,7 @@ def update_student(student_id: int, student_data: StudentUpdate, db: Session=Dep
 def delete_student(student_id: int, db: Session= Depends(get_DB)):
     existing_student = db.query(StudentModel).filter(StudentModel.id == student_id).first()
     if not existing_student:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Student with {student_id} Not Found in Student Database..')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Student with ID {student_id} was not found in the database.')
     db.delete(existing_student)
     db.commit()
     return None

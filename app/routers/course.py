@@ -33,7 +33,7 @@ def getall_course(db: Session=Depends(get_DB)):
 def get_course(course_id: int, db: Session=Depends(get_DB)):
     data = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if not data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Course with {course_id} Not Found in Course Database..')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Course with ID {course_id} was not found in the database.')
     return data
 
 @router.put('/{course_id}', response_model=CourseResponse, status_code=status.HTTP_200_OK)
@@ -41,7 +41,7 @@ def update_course(course_id: int,course_data: CourseUpdate, db: Session=Depends(
     existing_course = db.query(CourseModel).filter(course_id==CourseModel.id).first()
 
     if not existing_course:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Course with {course_id} Not Found in Course Database..')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Course with ID {course_id} was not found in the database.')
     
     update_data_dict = course_data.model_dump(exclude_unset=True)
     
@@ -59,7 +59,7 @@ def update_course(course_id: int,course_data: CourseUpdate, db: Session=Depends(
 def delete_course(course_id: int, db: Session=Depends(get_DB)):
     existing_course = db.query(CourseModel).filter(course_id==CourseModel.id).first()
     if not existing_course:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Course with {course_id} Not Found in Course Database..')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Course with ID {course_id} was not found in the database.')
     
     db.delete(existing_course)
     db.commit()

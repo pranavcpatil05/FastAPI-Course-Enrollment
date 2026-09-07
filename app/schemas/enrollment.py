@@ -10,7 +10,9 @@ class EnrollmentCreate(EnrollmentBase):
     pass
 
 class EnrollmentResponse(EnrollmentBase):
-    id: int
+    enrollment_id: int = Field(..., validation_alias='id')
+    student_id: int
+    course_id: int
     enrollment_date: date
     status: str
 
