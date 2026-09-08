@@ -1,5 +1,4 @@
-from pydantic import Field, BaseModel
-from typing import Annotated, Optional
+from pydantic import Field, BaseModel, ConfigDict
 from datetime import date
 
 class EnrollmentBase(BaseModel):
@@ -12,9 +11,10 @@ class EnrollmentCreate(EnrollmentBase):
 class EnrollmentResponse(EnrollmentBase):
     enrollment_id: int = Field(..., validation_alias='id')
     student_id: int
+    student_name: str
     course_id: int
+    course_title: str
     enrollment_date: date
     status: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
